@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <!-- <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css"> -->
+  <link rel="stylesheet" href="../../style.css">
+
+    <script>
+    window.MathJax = {
+        chtml: {
+        scale: 1.0 /* 全体の数式を1.1倍（110%）にする */
+        }
+    };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+  <title>Town</title>
+
+</head>
+
+<body>
+  <!-- <div id="tabs">
+    <ul id="tabss">
+      <li><a href="#tab1">ホーム</a></li>
+      <li><a href="#tab2">記録</a></li>
+      <li><a href="#tab3">予定</a></li>
+    </ul>
+
+    <div id="tab1">
+        <h3>ホーム</h3>                    
+    </div>
+
+    <div id="tab2">
+        <h3>記録</h3>                    
+    </div>
+
+    <div id="tab3">
+        <h3>予定</h3>                    
+    </div> -->
+    <div id="buttons">
+      <button type="button" class="btn-outline" onclick="location.href='.html'">ニュースへ</button>
+      <button type="button" class="btn-outline" onclick="location.href='.html'">お知らせへ</button>
+      <button type="button" class="btn-outline" onclick="location.href='../../index.html'">予定へ</button>
+      <button type="button" class="btn-outline" onclick="location.href='../../index.html'">報告へ</button>
+      <!-- <a href="../../sakuin.html" target="_blank">
+      <button type="button" class="btn-outline">索引のページへ</button> -->
+      </a>
+    </div>
+  <!-- </div> -->
+
+  <!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+  <script>
+    $(function() {
+      // 1. タブを初期化
+      $("#tabs").tabs();
+
+      // 2. URLにテキストフラグメントが含まれている場合，タブ2を強制的に開く
+      if (window.location.hash.indexOf('tab2') !== -1) {
+        // タブ2（0から数えて2番目なので「1」を指定）を選択状態にする
+        $("#tabs").tabs("option", "active", 1);
+      }
+    });
+  </script> -->
+
+</body>
+</html>

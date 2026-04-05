@@ -1,0 +1,250 @@
+
+/* タブ機能関係 */
+  #tabss {
+    /* 画面の右下に固定 */
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    
+    /* 他の要素より前面に表示 */
+    z-index: 9999;
+    
+    /* 大きさの調整（必要に応じて） */
+    /* width: 300px;
+    max-width: 90vw; */    
+    }
+
+    /* コンテンツ部分が長くなった場合にスクロールできるようにする */
+    .ui-tabs-panel {
+      max-height: 1000px;
+      overflow-y: auto;
+    }
+
+/* バックグラウンド彩色関係 */
+    /* コンテンツ部分の背景色設定 */
+    #tab1{
+      background-color:rgb(247, 246, 189);
+    }
+    #tab2{
+      background-color:rgb(220, 236, 255);
+    }
+    /* 索引の背景色設定 */
+    .sakuinn-bgc{
+      background-color:rgb(250, 210, 223);
+    }
+    /* テーマ学習の背景色設定 */
+    .theme-bgc{
+      background-color:rgb(245, 238, 138);
+    }
+
+/* 次問・前問ボタン関係 */
+    #buttons {
+    /* 画面の右下に固定 */
+    position: fixed;
+    left: 20px;
+    bottom: 20px;
+    
+    /* 他の要素より前面に表示 */
+    z-index: 9999;
+    }
+
+    /*文中の文字を囲む（白抜き問題等）*/
+    .whiteFrame{           
+      line-height: 225%;
+      padding:0px 0px; /* 枠と文字の空間 */
+      margin:0px 0px; /* 枠の外の空間 */
+      background-color:transparent;/*rgb(255,255,255); /* 枠の背景色 */
+      border:1.5px solid rgb(0,0,0); /* 枠の線の太さ・種類・色 */
+      border-radius:0px; /* 枠の角を丸くする */
+      box-shadow: 0px 0px 0px #ddd; /*影をいれる*/
+      font-family:inherit; /* フォントの種類を継承する */
+      font-size:1em;	/* フォントの大きさ */
+    }
+
+    /* 問題文選択肢中つなぎ線 */ 
+    .connectLine{         
+      text-decoration-line: line-through;
+    }
+
+    /* table関係 */ 
+    table {
+      /* width: 100%; */
+      /* table-layout: fixed; */
+      border-collapse:  collapse;     /* セルの線を重ねる */
+      margin-left: auto;
+      margin-right: auto;
+    }
+    caption {
+      font-weight: bold;
+      /* margin-bottom: 0.75rem; 
+      white-space: nowrap;
+      text-align: center;
+      padding-bottom: 5px; */
+    }
+    table.auto-layout {
+    table-layout: auto;
+    }
+    th,td {
+    border: solid 1px;              /* 枠線指定 */
+    padding: 5px;                   /* セル内余白 */
+    }
+    td.divider {
+    width: 1px;          /* 幅を1pxに固定 */
+    padding: 0;          /* 余白を完全に排除 */
+    background-color: #ccc; /* 線の色（グレーなど） */
+    }
+    .tdVertical{                   /* 表内縦書き */   
+    /* vertical-align:middle; */
+    writing-mode: vertical-lr;  
+    }
+    tr>*:empty{       /* tableの空白のセルに斜線↗（to left top）をひく https://csshtml.work/table-shasen/ */
+    background-image: linear-gradient(to left top, transparent calc(50% - 0.5px), #999 50%, #999 calc(50% + 0.5px), transparent calc(50% + 1px)) !important;
+    }
+
+  .tblcap{
+      text-align: center;
+      font-weight: bold;
+      margin-bottom: 0.75rem; 
+  }
+
+  img {
+    max-width: 100%;         /* 親より大きくならないように */
+    height: auto;
+  }
+
+/* 要素を横並びにする */
+  .container {
+    display: flex;       /* これだけで横並びになります */
+    justify-content: center; /* 左右の中央 */
+    gap: 5px;          /* 要素同士の隙間（便利！） */
+  }
+  .item {
+      flex: 1;            /* 均等な幅にする設定 */
+      /* background-color: #f0f0f0; */
+      padding: 10px;
+      /* border: 1px solid #ccc; */
+      text-align: center;
+    }
+
+    /* 画像横並び　2022-80 */
+    /* #flexbox{
+      display:flex;
+      justify-content:center;
+      flex-wrap: wrap;
+      /* background:#ffffcc; */
+      /* width: 100%;
+      height:auto;
+      padding:0 20px;
+    } */
+    /* .box-item{ */
+      /* background:#ffffcc; */
+      /* text-align: center;
+      padding:0 10px;
+      border:none;
+    } */ 
+
+    /* 画像，表キャプション */
+    .cap {
+      text-align: center;
+      font-weight: bold;
+      margin-top: 0.75rem; 
+      margin-bottom: 0.75rem; 
+    }
+    /* 出典 */
+    .source {
+      text-align: center;
+      font-size: 0.75rem;
+    }
+
+/* ホーム，テーマ，索引ボタン関係 */
+    .btn-outline {
+    background-color: white; /* 背景を透明に */
+    color: #007bff;                /* 文字色を青に */
+    border: 2px solid #007bff;    /* 枠線を青に */
+    }
+
+    .btn-outline:hover {
+    background-color: #007bff;    /* ホバーで塗りつぶす */
+    color: white;
+    }
+
+    /* YouTub埋め込みスマホ対応 */
+    .video-container {
+      position: relative;
+      padding-bottom: 56.25%; /* 16:9のアスペクト比 */
+      height: 0;
+      overflow: hidden;
+    }
+    .video-container iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+
+/* 索引ページ用（要素を1〜5列に整列させる） */
+  /*要素を1〜5列に整列させる*/
+    .grid-container {
+      display: grid;
+      /* 基本は1列（スマホ用） */
+      grid-template-columns: 1fr; 
+      gap: 15px;
+    }
+
+    /* 画面が広くなったら自動計算に切り替える */
+    @media (min-width: 400px) {
+      .grid-container {
+        /* 最小幅18%にすれば、最大5列程度に収まります */
+        grid-template-columns: repeat(auto-fit, minmax(18%, 1fr));
+      }
+    }
+
+/* 一般装飾 */
+
+    /* 赤下線 */
+    .underln {
+    text-decoration: underline red; text-decoration-thickness: 1.5px;
+    /* border-bottom: 2.5px solid #fa0101; */
+    /* text-decoration: underline red;
+    text-underline-offset:0.2em; */
+    }
+
+    /* テキストセンター */
+    .textcenter{
+      text-align: center;      
+    }
+
+    /* 太字 */
+    .bold{
+      font-weight: bold;          
+    }
+
+    /* マージン（下）調整 */
+    .mb-5  { margin-bottom: 5px; }
+    .mb-10 { margin-bottom: 10px; }
+    .mb-20 { margin-bottom: 20px; }
+
+     /* マージン（左）調整 */
+    .ml-10 { margin-left: 10px; }
+    .ml-30 { margin-left: 30px; }
+    .ml-50 { margin-left: 50px; }
+
+    /* リンク元の色 */
+    a {
+      color: #007bff; /* 青色 */
+    }    
+    a:visited {
+      color: #007bff; /* 訪問後も青色のままにする */
+    }
+
+    /* 注意書き，強調で行を囲む枠 */
+    .box {
+      border: 1px solid #333; /* 線の太さ・種類・色 */
+      padding: 20px;          /* 枠の内側の余白（重要！） */
+      margin: 10px 0;         /* 枠の外側の余白 */
+      border-radius: 5px;     /* 角を少し丸くすると柔らかい印象に */
+      background-color: #f9f9f9; /* 背景色を薄く付けると見やすい */
+  }
+
