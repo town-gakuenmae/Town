@@ -28,7 +28,7 @@ body {
 
 html {
   font-size: 10px;
-  background-color: rgba(5, 247, 66, 0.685);
+  background-color: rgba(5, 247, 126, 0.267);
 }
 
 h1 {
@@ -67,11 +67,11 @@ li {
 }
 
 .past{
-    color: #f75e05;
+    color: #f74a05;
 }
 
 .plan{
-    color: #1505f7;
+    color: #0a0a0a;
 }
 
 hr {
