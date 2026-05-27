@@ -1,108 +1,83 @@
+/* CSSのリセット */
 
-/* 次問・前問ボタン関係 */
-    #buttons {
-    /* 画面の右下に固定 */
-    position: fixed;
-    left: 20px;
-    bottom: 20px;
-    
-    /* 他の要素より前面に表示 */
-    z-index: 9999;
-    }
+body {
+  margin: 0;
+}
 
-  img {
-    max-width: 100%;         /* 親より大きくならないように */
-    height: auto;
+/* デフォルト（スマホ）: 画面いっぱいに表示して左右に少しだけ余白をとる */
+body {
+  width: 100%;
+  padding: 0 15px; 
+  margin: 0;
+}
+
+/* 画面幅が 800px 以上になったら、MDNのような中央寄せにする */
+@media (min-width: 800px) {
+  body {
+    width: 70%;
+    margin: 0 auto;
+    padding: 0; /* スマホ用の余白をリセット */
   }
+}
 
-/* 要素を横並びにする */
-  .container {
-    display: flex;       /* これだけで横並びになります */
-    justify-content: center; /* 左右の中央 */
-    gap: 5px;          /* 要素同士の隙間（便利！） */
-  }
-  .item {
-      flex: 1;            /* 均等な幅にする設定 */
-      /* background-color: #f0f0f0; */
-      padding: 10px;
-      /* border: 1px solid #ccc; */
-      text-align: center;
-    }
+/* box-sizing：パディングやボーダーの幅が、要素の全体の横幅（width）に含まれるように設定します。これを行うだけで、スマホ画面での「横スクロール（意図しないはみ出し）」の発生を劇的に減らせます。 */ 
 
-    /* 画像，表キャプション */
-    .cap {
-      text-align: center;
-      font-weight: bold;
-      margin-top: 0.75rem; 
-      margin-bottom: 0.75rem; 
-    }
-    /* 出典 */
-    .source {
-      text-align: center;
-      font-size: 0.75rem;
-    }
+*, *::before, *::after {
+  box-sizing: border-box;
+}
 
-/* ホーム，テーマ，索引ボタン関係 */
-    .btn-outline {
-    background-color: white; /* 背景を透明に */
-    color: #007bff;                /* 文字色を青に */
-    border: 2px solid #007bff;    /* 枠線を青に */
-    }
+html {
+  font-size: 10px;
+  background-color: rgba(5, 247, 66, 0.685);
+}
 
-    .btn-outline:hover {
-    background-color: #007bff;    /* ホバーで塗りつぶす */
-    color: white;
-    }
+h1 {
+  font-size: 4rem;
+  text-align: center;
+  text-shadow: 2px 2px 10px black;
+}
 
-    /* YouTub埋め込みスマホ対応 */
-    .video-container {
-      position: relative;
-      padding-bottom: 56.25%; /* 16:9のアスペクト比 */
-      height: 0;
-      overflow: hidden;
-    }
-    .video-container iframe {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      border: 0;
-    }
+h2 {
+  font-size: 3rem;
+  text-align: center;
+}
 
-    /* 画面が広くなったら自動計算に切り替える */
-    @media (min-width: 400px) {
-      .grid-container {
-        /* 最小幅18%にすれば、最大5列程度に収まります */
-        grid-template-columns: repeat(auto-fit, minmax(18%, 1fr));
-      }
-    }
+h3 {
+  font-size: 2rem;
+  text-align: center;
+}
 
-/* 一般装飾 */
+p,
+li {
+  font-size: 1.6rem;
+  line-height: 1.5;
+}
 
-    /* テキストセンター */
-    .textcenter{
-      text-align: center;      
-    }
+h1,
+h2,
+h3 {
+  font-family: "Yu Mincho", cursive;
+  color: #2a2a2a;
+}
 
-    /* 太字 */
-    .bold{
-      font-weight: bold;          
-    }
+p,
+li {
+  font-family: "Yu Gothic Medium", sans-serif;
+  color: #2a2a2a;
+}
 
-    a {
-      color: #007bff; /* 青色 */
-    }    
-    a:visited {
-      color: #007bff; /* 訪問後も青色のままにする */
-    }
+.past{
+    color: #f75e05;
+}
 
-    /* 注意書き，強調で行を囲む枠 */
-    .box {
-      border: 1px solid #333; /* 線の太さ・種類・色 */
-      padding: 20px;          /* 枠の内側の余白（重要！） */
-      margin: 10px 0;         /* 枠の外側の余白 */
-      border-radius: 5px;     /* 角を少し丸くすると柔らかい印象に */
-      background-color: #f9f9f9; /* 背景色を薄く付けると見やすい */
-  }
+.plan{
+    color: #1505f7;
+}
+
+hr {
+  border: none;          /* ブラウザの初期線を消す */
+  height: 1px;           /* 線の太さ */
+  background-color: #02020231; /* 線の色 */
+  margin: 15px 0;        /* 上下の余白 */
+}
 
