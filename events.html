@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>学園町会&nbsp;カレンダー</title>
+    <link href="style.css" rel="stylesheet" />
+</head>
+<body>
+    <h2><span class="plan">学園町会&nbsp;カレンダー</span></h2>
+    <h3><span style="color:green;">令和8年（2026年）</span></h3>
+    <div id="event-list">
+    </div>    
+    <p>&emsp;</p>
+    <p>&emsp;</p>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        // HTMLがすべて読み込まれて、準備が整ったら実行する
+        $(function() {
+            
+            // データの流し込み先（箱）をjQueryで取得して変数に入れておく
+            const $container = $('#event-list');
+            
+            // 最初に箱の中身を念のため空っぽにする
+            $container.empty();
+
+            // 同じフォルダにある 'events.json' を読み込む（非同期通信）
+            $.getJSON('events.json', function(data) {
+                
+                // 読み込みが成功した場合、データの数だけ1件ずつループ処理
+                $.each(data, function(index, event) {
+                    
+                    // まず、行事の上に区切り線（<hr>）を追加
+                    $container.append('<hr>');
+
+                    // 終了した行事（isPast が true）かどうかの条件分岐
+                    if (event.isPast) {
+                        // 過去の行事：class="past" をつけ、チェックマーク画像を入れる
+                        $container.append(
+                            '<p class="past"><img src="images/checkmark.svg"> ' + 
+                            event.date + ' ' + event.title + '&emsp;' + event.remarks + '</p>'
+                        );
+                    } else {
+                        // 今後の行事：class="plan" をつけ、空白（&emsp;）を挟む
+                        $container.append(
+                            '<p class="plan">' + event.date + '&emsp;' + event.title  + '&emsp;' + event.remarks + '</p>'
+                        );
+                    }
+                });
+
+            }).fail(function() {
+                // 万が一、JSONファイルの読み込みに失敗した場合のエラー表示
+                $container.html('<p style="color: red;">行事予定の読み込みに失敗しました。ファイル名やCORS制限を確認してください。</p>');
+            });
+
+        });
+    </script>
+</body>
+</html>
