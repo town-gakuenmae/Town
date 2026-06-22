@@ -141,5 +141,10 @@
     "date": "12月25日（金）10：00〜11：30",
     "title": "：クリスマス",
     "isPast": false
+  },
+  {
+    "date": "1月1日",
+    "title": "お正月",
+    "isPast": false
   }
 ]
