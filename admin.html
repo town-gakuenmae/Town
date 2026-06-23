@@ -38,6 +38,11 @@
     </div>
 
     <div class="form-group">
+        <label for="event-remarks">備考</label>
+        <input type="text" id="event-title" placeholder="例：雨天決行">
+    </div>
+
+    <div class="form-group">
         <label class="checkbox-label">
             <input type="checkbox" id="event-past"> 終了した行事にする（チェックマーク付与）
         </label>
@@ -66,6 +71,7 @@
                 const token = $('#github-token').val().trim();
                 const date = $('#event-date').val().trim();
                 const title = $('#event-title').val().trim();
+                const remarks = $('#event-remarks').val().trim();
                 const isPast = $('#event-past').prop('checked');
 
                 if (!token || !date || !title) {
@@ -91,7 +97,7 @@
                     const currentJson = decodeURIComponent(escape(atob(res.content)));
                     const eventList = JSON.parse(currentJson);
 
-                    eventList.push({ date: date, title: title, isPast: isPast });
+                    eventList.push({ date: date, title: title, remarks: remarks, isPast: isPast });
 
                     const newJsonStr = JSON.stringify(eventList, null, 2);
                     const b64Content = btoa(unescape(encodeURIComponent(newJsonStr)));
@@ -113,13 +119,14 @@
                     showStatus('保存が完了しました！数分以内にサイトへ反映されます。', 'success');
                     $('#event-date').val('');
                     $('#event-title').val('');
+                    $('#event-remarks').val('');
                     $('#event-past').prop('checked', false);
 
                 } catch (error) {
                     console.error(error);
                     showStatus('エラーが発生しました。パスワード（トークン）が正しいか確認してください。', 'error');
                 } finally {
-                    $('#save-btn').prop('disabled', false).text('この行事をついかする');
+                    $('#save-btn').prop('disabled', false).text('この行事を追加する');
                 }
             });
 
