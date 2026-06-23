@@ -146,5 +146,10 @@
     "date": "1月1日",
     "title": "お正月",
     "isPast": false
+  },
+  {
+    "date": "12月30日",
+    "title": "忘年会",
+    "isPast": false
   }
 ]
