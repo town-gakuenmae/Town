@@ -3,24 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>【管理画面】行事予定の追加</title>
+    <title>【管理画面】行事予定の管理</title>
     <style>
-        body { font-family: sans-serif; padding: 20px; max-width: 500px; margin: 0 auto; background: #f5f5f5; }
-        h1 { font-size: 20px; color: #333; }
-        .form-group { margin-bottom: 15px; }
+        body { font-family: sans-serif; padding: 20px; max-width: 600px; margin: 0 auto; background: #f5f5f5; color: #333; }
+        h1, h2 { font-size: 20px; border-bottom: 2px solid #ccc; padding-bottom: 5px; }
+        .form-group { margin-bottom: 15px; background: white; padding: 15px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
         label { display: block; margin-bottom: 5px; font-weight: bold; }
-        input[type="text"], input[type="password"] { width: 100%; padding: 8px; box-sizing: border-box; font-size: 16px; }
-        .checkbox-label { display: flex; align-items: center; gap: 5px; cursor: pointer; }
+        input[type="text"], input[type="password"] { width: 100%; padding: 8px; box-sizing: border-box; font-size: 16px; margin-bottom: 5px; }
+        .checkbox-label { display: flex; align-items: center; gap: 5px; cursor: pointer; margin-top: 10px; }
         button { width: 100%; padding: 12px; background: #007bff; color: white; border: none; border-radius: 4px; font-size: 16px; font-weight: bold; cursor: pointer; }
         button:disabled { background: #ccc; }
-        #status { margin-top: 15px; padding: 10px; border-radius: 4px; display: none; }
+        #status { margin-top: 15px; padding: 10px; border-radius: 4px; display: none; font-weight: bold; }
         .success { background: #d4edda; color: #155724; }
         .error { background: #f8d7da; color: #721c24; }
+        .hint { font-size: 12px; color: #666; margin-bottom: 10px; }
+        
+        /* 一覧・削除用のスタイル */
+        .event-list { margin-top: 20px; background: white; padding: 10px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .event-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid #eee; gap: 10px; }
+        .event-item:last-child { border-bottom: none; }
+        .event-info { flex-grow: 1; font-size: 14px; }
+        .event-remarks { font-size: 12px; color: #666; margin-top: 3px; background: #f9f9f9; padding: 2px 6px; border-radius: 3px; display: inline-block; }
+        .delete-btn { width: auto; padding: 6px 12px; background: #dc3545; font-size: 14px; }
+        .load-btn { background: #28a745; margin-bottom: 15px; }
     </style>
 </head>
 <body>
 
-    <h1>行事予定の追加（スマホ用）</h1>
+    <h1>行事予定の管理（スマホ用）</h1>
 
     <div class="form-group">
         <label for="github-token">管理用パスワード (GitHub Token)</label>
@@ -28,110 +38,203 @@
     </div>
 
     <div class="form-group">
+        <h3>新しい行事の追加</h3>
         <label for="event-date">日付・時間</label>
-        <input type="text" id="event-date" placeholder="例：9月1日（火）10:00〜">
-    </div>
-
-    <div class="form-group">
+        <div class="hint">※必ず先頭を「年-月-日」にしてください（例：2026-06-23（火）10:00〜12:00）</div>
+        <input type="text" id="event-date" placeholder="2026-06-23（火）10:00〜12:00">
+        
         <label for="event-title">行事名</label>
         <input type="text" id="event-title" placeholder="例：町会主催防災訓練">
-    </div>
 
-    <div class="form-group">
-        <label for="event-remarks">備考</label>
-        <input type="text" id="event-remarks" placeholder="例：雨天決行">
-    </div>
+        <label for="event-remarks">備考（場所、持ち物など）</label>
+        <input type="text" id="event-remarks" placeholder="例：場所：集会所 / 雨天中止">
 
-    <div class="form-group">
         <label class="checkbox-label">
-            <input type="checkbox" id="event-past"> 終了した行事にする（チェックマーク付与）
+            <input type="checkbox" id="event-past"> 終了した行事にする
         </label>
+        <button id="save-btn" style="margin-top:15px;">この行事をついかする</button>
     </div>
-
-    <button id="save-btn">この行事を追加する</button>
 
     <div id="status"></div>
+
+    <h2>登録済みの行事一覧（自動日付順）</h2>
+    <button id="load-btn" class="load-btn">一覧を読み込む / 最新にする</button>
+    <div id="event-list-container" class="event-list">一覧がここに表示されます</div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <script>
-        // 設定項目（トークンは空に）
         const REPO_OWNER   = 'town-gakuenmae';
         const REPO_NAME    = 'Town';
         const FILE_PATH    = 'events.json';
 
+        let globalEventList = [];
+        let currentSha = '';
+
         $(function() {
-            // スマホのブラウザに、一度入力したトークンを記憶させる機能（毎回打つのが大変なため）
             if (localStorage.getItem('saved_token')) {
                 $('#github-token').val(localStorage.getItem('saved_token'));
+                loadEvents();
             }
 
+            $('#load-btn').on('click', function() { loadEvents(); });
+
+            // 行事追加ボタン
             $('#save-btn').on('click', async function() {
-                // 💡 画面の入力欄からトークンを取得する
-                const token = $('#github-token').val().trim();
                 const date = $('#event-date').val().trim();
                 const title = $('#event-title').val().trim();
                 const remarks = $('#event-remarks').val().trim();
                 const isPast = $('#event-past').prop('checked');
 
-                if (!token || !date || !title) {
-                    showStatus('パスワード、日付、行事名、備考を入力してください。', 'error');
+                if (!date || !title) {
+                    showStatus('日付と行事名を入力してください。', 'error');
                     return;
                 }
 
-                // 入力されたトークンをスマホに記憶させる
-                localStorage.setItem('saved_token', token);
+                // 先頭が「XXXX-XX-XX」の形式になっているか簡易チェック
+                const dateRegex = /^\d{4}-\d{2}-\d{2}/;
+                if (!dateRegex.test(date)) {
+                    showStatus('エラー：日付の先頭は必ず「2026-06-23」のように半角数字とハイフンで入力してください。', 'error');
+                    return;
+                }
 
-                $('#save-btn').prop('disabled', true).text('送信中...');
-                showStatus('GitHubにデータを保存しています...', '');
+                // データを追加
+                globalEventList.push({ date: date, title: title, remarks: remarks, isPast: isPast });
+                
+                // 💡 【重要】追加したあとに日付順で並び替える（ソート機能）
+                sortEvents();
+                
+                await updateGitHub('行事予定を追加（自動並び替え）');
+                
+                $('#event-date').val('');
+                $('#event-title').val('');
+                $('#event-remarks').val('');
+                $('#event-past').prop('checked', false);
+            });
+
+            // 削除ボタン
+            $('#event-list-container').on('click', '.delete-btn', async function() {
+                const index = $(this).data('index');
+                if (!confirm('この行事を本当に削除しますか？')) return;
+                globalEventList.splice(index, 1);
+                await updateGitHub('行事予定を削除');
+            });
+
+            // 💡 配列を日付順に並び替える関数
+            function sortEvents() {
+                globalEventList.sort((a, b) => {
+                    // 先頭の「YYYY-MM-DD」の部分だけを比較する
+                    const dateA = a.date.substring(0, 10);
+                    const dateB = b.date.substring(0, 10);
+                    if (dateA < dateB) return -1;
+                    if (dateA > dateB) return 1;
+                    return 0;
+                });
+            }
+
+            // GitHubから読み込み
+            async function loadEvents() {
+                const token = $('#github-token').val().trim();
+                if (!token) {
+                    showStatus('一覧を読み込むにはパスワードを入力してください。', 'error');
+                    return;
+                }
+                localStorage.setItem('saved_token', token);
+                $('#event-list-container').text('読み込み中...');
 
                 try {
-                    const url = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`;
-                    
+                    const url = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}?t=${new Date().getTime()}`;
                     const res = await $.ajax({
                         url: url,
                         method: 'GET',
-                        headers: { 'Authorization': `token ${token}` } // 💡 入力されたトークンを使用
+                        headers: { 'Authorization': `token ${token}` }
                     });
 
+                    currentSha = res.sha;
                     const currentJson = decodeURIComponent(escape(atob(res.content)));
-                    const eventList = JSON.parse(currentJson);
+                    globalEventList = JSON.parse(currentJson);
 
-                    eventList.push({ date: date, title: title, remarks: remarks, isPast: isPast });
+                    // 読み込み時にも念のため並び替える
+                    sortEvents();
+                    renderList();
+                    showStatus('最新のデータを読み込みました。', 'success');
+                } catch (error) {
+                    console.error(error);
+                    $('#event-list-container').text('読み込み失敗。パスワードを確認してください。');
+                }
+            }
 
-                    const newJsonStr = JSON.stringify(eventList, null, 2);
+            // 画面に一覧を表示
+            function renderList() {
+                const container = $('#event-list-container');
+                container.empty();
+
+                if (globalEventList.length === 0) {
+                    container.text('登録されている行事はありません。');
+                    return;
+                }
+
+                globalEventList.forEach((event, index) => {
+                    const pastText = event.isPast ? ' <span style="color:red;">[終了]</span>' : '';
+                    const remarksHtml = event.remarks ? `<br><span class="event-remarks">補足: ${event.remarks}</span>` : '';
+                    
+                    const item = `
+                        <div class="event-item">
+                            <div class="event-info">
+                                <strong>${event.date}</strong><br>
+                                ${event.title}${pastText}
+                                ${remarksHtml}
+                            </div>
+                            <button class="delete-btn" data-index="${index}">削除</button>
+                        </div>
+                    `;
+                    container.append(item);
+                });
+            }
+
+            // GitHubに保存
+            async function updateGitHub(commitMessage) {
+                const token = $('#github-token').val().trim();
+                $('button').prop('disabled', true);
+                showStatus('GitHubのデータを更新中...', '');
+
+                try {
+                    const url = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`;
+                    const newJsonStr = JSON.stringify(globalEventList, null, 2);
                     const b64Content = btoa(unescape(encodeURIComponent(newJsonStr)));
 
-                    await $.ajax({
+                    const putRes = await $.ajax({
                         url: url,
                         method: 'PUT',
                         headers: {
-                            'Authorization': `token ${token}`, // 💡 入力されたトークンを使用
+                            'Authorization': `token ${token}`,
                             'Content-Type': 'application/json'
                         },
                         data: JSON.stringify({
-                            message: '行事予定を追加（スマホアプリより）',
+                            message: commitMessage + '（管理画面より）',
                             content: b64Content,
-                            sha: res.sha
+                            sha: currentSha
                         })
                     });
 
-                    showStatus('保存が完了しました！数分以内にサイトへ反映されます。', 'success');
-                    $('#event-date').val('');
-                    $('#event-title').val('');
-                    $('#event-remarks').val('');
-                    $('#event-past').prop('checked', false);
+                    currentSha = putRes.content.sha;
+                    renderList();
+                    showStatus('GitHubの更新が完了しました！数分でサイトに反映されます。', 'success');
 
                 } catch (error) {
                     console.error(error);
-                    showStatus('エラーが発生しました。パスワード（トークン）が正しいか確認してください。', 'error');
+                    showStatus('保存に失敗しました。再度一覧を読み込み直してからお試しください。', 'error');
                 } finally {
-                    $('#save-btn').prop('disabled', false).text('この行事を追加する');
+                    $('button').prop('disabled', false);
                 }
-            });
+            }
 
             function showStatus(msg, type) {
-                $('#status').text(msg).removeClass().addClass(type).fadeIn();
+                if(type === '') {
+                    $('#status').text(msg).removeClass().css('background','#eee').css('color','#333').fadeIn();
+                } else {
+                    $('#status').text(msg).removeClass().addClass(type).fadeIn();
+                }
             }
         });
     </script>
