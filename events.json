@@ -142,5 +142,11 @@
     "title": "会議",
     "remarks": "雨天決行",
     "isPast": false
+  },
+  {
+    "date": "（アプリテスト）12月11日",
+    "title": "会議",
+    "remarks": "会議後懇親会",
+    "isPast": true
   }
 ]
