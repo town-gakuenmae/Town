@@ -81,11 +81,9 @@
 
             // 行事追加ボタン
             $('#save-btn').on('click', async function() {
-                const date = $('#event-date').val().trim();
-                const title = $('#event-title').val().trim();
-                const remarks = $('#event-remarks').val().trim();
-                const isPast = $('#event-past').prop('checked');
-
+                const date = escapeHtml($('#event-date').val().trim());
+                const title = escapeHtml($('#event-title').val().trim());
+                const remarks = escapeHtml($('#event-remarks').val().trim());
                 if (!date || !title) {
                     showStatus('日付と行事名を入力してください。', 'error');
                     return;
@@ -237,6 +235,16 @@
                 }
             }
         });
+            // HTMLの特別な記号（< や > など）を無害な文字に変換する関数
+            function escapeHtml(str) {
+                if (!str) return '';
+                return str
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/"/g, '&quot;')
+                    .replace(/'/g, '&#39;');
+            }
     </script>
 </body>
 </html>

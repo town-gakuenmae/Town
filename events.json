@@ -102,15 +102,15 @@
     "isPast": false
   },
   {
-    "date": "10-11（日）",
-    "title": "西原小ブロックスポーツフェスティバル：西原小",
-    "remarks": "本年は学園町会が幹事役",
-    "isPast": false
-  },
-  {
     "date": "10-6（火）10：00〜12：00",
     "title": "立ち寄りカフェ（社協学園支部）：学園会館",
     "remarks": "毎月第1火曜日開催",
+    "isPast": false
+  },
+  {
+    "date": "10-11（日）",
+    "title": "西原小ブロックスポーツフェスティバル：西原小",
+    "remarks": "本年は学園町会が幹事役",
     "isPast": false
   },
   {
@@ -120,14 +120,14 @@
     "isPast": false
   },
   {
-    "date": "11-8（日）",
-    "title": "ふじみ野市主催防災訓練：西原小",
+    "date": "11-nf（未定）",
+    "title": "第2回ごみゼロ運動",
     "remarks": "",
     "isPast": false
   },
   {
-    "date": "11-nf（未定）",
-    "title": "第2回ごみゼロ運動",
+    "date": "11-8（日）",
+    "title": "ふじみ野市主催防災訓練：西原小",
     "remarks": "",
     "isPast": false
   },
