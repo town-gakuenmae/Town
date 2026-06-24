@@ -40,8 +40,8 @@
     <div class="form-group">
         <h3>新しい行事の追加</h3>
         <label for="event-date">日付・時間</label>
-        <div class="hint">※必ず先頭を「年-月-日」にしてください（例：2026-06-23（火）10:00〜12:00）</div>
-        <input type="text" id="event-date" placeholder="2026-06-23（火）10:00〜12:00">
+        <div class="hint">※必ず先頭を「月-日」にしてください．　例：06-23（火）10:00〜12:00．日が未定の場合はnfと入れて下さい．例：06-nf．</div>
+        <input type="text" id="event-date" placeholder="06-23（火）10:00〜12:00">
         
         <label for="event-title">行事名</label>
         <input type="text" id="event-title" placeholder="例：町会主催防災訓練">
@@ -52,7 +52,7 @@
         <label class="checkbox-label">
             <input type="checkbox" id="event-past"> 終了した行事にする
         </label>
-        <button id="save-btn" style="margin-top:15px;">この行事をついかする</button>
+        <button id="save-btn" style="margin-top:15px;">この行事を追加する</button>
     </div>
 
     <div id="status"></div>
@@ -91,10 +91,10 @@
                     return;
                 }
 
-                // 先頭が「XXXX-XX-XX」の形式になっているか簡易チェック
-                const dateRegex = /^\d{4}-\d{2}-\d{2}/;
+                // 先頭が「XX-XX」の形式になっているか簡易チェック
+                const dateRegex = /^\d{2}-\d{2}/;
                 if (!dateRegex.test(date)) {
-                    showStatus('エラー：日付の先頭は必ず「2026-06-23」のように半角数字とハイフンで入力してください。', 'error');
+                    showStatus('エラー：日付の先頭は必ず「06-23」のように半角数字とハイフンで入力してください。', 'error');
                     return;
                 }
 
@@ -123,9 +123,9 @@
             // 💡 配列を日付順に並び替える関数
             function sortEvents() {
                 globalEventList.sort((a, b) => {
-                    // 先頭の「YYYY-MM-DD」の部分だけを比較する
-                    const dateA = a.date.substring(0, 10);
-                    const dateB = b.date.substring(0, 10);
+                    // 先頭の「MM-DD」の部分だけを比較する
+                    const dateA = a.date.substring(0, 5);
+                    const dateB = b.date.substring(0, 5);
                     if (dateA < dateB) return -1;
                     if (dateA > dateB) return 1;
                     return 0;
