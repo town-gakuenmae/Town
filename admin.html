@@ -92,9 +92,9 @@
                 }
 
                 // 先頭が「XXXX-XX-XX」の形式になっているか簡易チェック
-                const dateRegex = /^\d{4}-\d{2}-\d{2}/;
+                const dateRegex = /^\d{2}-\d{2}/;
                 if (!dateRegex.test(date)) {
-                    showStatus('エラー：日付の先頭は必ず「2026-06-23」のように半角数字とハイフンで入力してください。', 'error');
+                    showStatus('エラー：日付の先頭は必ず「06-23」のように半角数字とハイフンで入力してください。', 'error');
                     return;
                 }
 
