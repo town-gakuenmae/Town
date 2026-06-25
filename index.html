@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>学園町会&nbsp;カレンダー</title>
     <link href="style.css" rel="stylesheet" />
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#007bff">
+    <meta name="apple-mobile-web-app-capable" content="yes">
 </head>
 <body>
     <h2><span class="plan">学園町会&nbsp;カレンダー</span></h2>
@@ -72,6 +75,14 @@
             });
 
         });
+    </script>
+    <script>
+        // ブラウザがPWAに対応しているかチェックして、対応していれば裏方（sw.js）を起動する
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js')
+                .then(function() { console.log('PWA ServiceWorker 登録成功！'); })
+                .catch(function(err) { console.error('PWA 登録失敗:', err); });
+        }
     </script>
 </body>
 </html>

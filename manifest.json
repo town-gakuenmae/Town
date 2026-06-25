@@ -1,0 +1,16 @@
+{
+  "short_name": "町会カレンダー",
+  "name": "学園町会 カレンダー",
+  "icons": [
+    {
+      "src": "icon.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "index.html",
+  "background_color": "#ffffff",
+  "display": "standalone",
+  "theme_color": "#007bff",
+  "lang": "ja"
+}
