@@ -31,6 +31,20 @@ html {
   background-color: rgba(5, 247, 126, 0.589);
 }
 
+header {
+  position: fixed; /* 画面に固定する */
+  top: 0;          /* 画面の一番上に配置 */
+  left: 0;         /* 画面の左端に配置 */
+  width: 100%;     /* 横幅を画面いっぱいに広げる */
+  z-index: 9999;   /* 他のコンテンツより手前に表示する */
+  background-color:rgba(247, 5, 207, 0.589)
+}
+
+main {
+  /* ヘッダーの高さが例えば 60px の場合 */
+  padding-top: 60px; 
+}
+
 h1 {
   font-size: 4rem;
   text-align: center;
@@ -81,3 +95,14 @@ hr {
   margin: 15px 0;        /* 上下の余白 */
 }
 
+.edit-button {
+  display: block; margin-left: auto;
+  width: 120px; height: 50px;
+  text-align: center;
+  padding: 11px 10px;
+  background-color: #00d9ff;
+  color: #020000;
+  text-decoration: none;
+  border-radius: 5px;
+  font-size: 16px; /* ここで文字の大きさを変更します */
+}

@@ -4,85 +4,145 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>学園町会&nbsp;カレンダー</title>
-    <link href="style.css" rel="stylesheet" />
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#007bff">
+    <meta name="theme-color" content="#2e7d32">
     <meta name="apple-mobile-web-app-capable" content="yes">
+    <link href="style.css" rel="stylesheet" />
+    <style>
+        /* 💡 上部固定ヘッダーのスタイル */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: #2e7d32; /* 🟢 ヘッダーの背景色（お好みの色に変えられます） */
+            /* color: white; */
+            padding: 10px 15px;
+            box-sizing: border-box;
+            z-index: 1000; /* 最前面に表示 */
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header-title h2 {
+            margin: 0;
+            font-size: 18px;
+            color: white;
+        }
+        
+        .header-title h3 {
+            margin: 2px 0 0 0;
+            font-size: 13px;
+            color: white;
+            opacity: 0.9;
+        }
+
+        /* 💡 管理画面へのリンクボタンのスタイル */
+        .admin-link-btn {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid white;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .admin-link-btn:active {
+            background-color: rgba(255, 255, 255, 0.4);
+        }
+
+        /* 💡 メインコンテンツ領域（ヘッダーに被らないように上部余白を空ける） */
+        body {
+            margin: 0;
+            padding-top: 75px; /* ヘッダーの高さ分だけ下にずらす */
+            font-family: sans-serif;
+        }
+        
+        #event-list {
+            padding: 10px 15px;
+        }
+    </style>
 </head>
 <body>
-    <h2><span class="plan">学園町会&nbsp;カレンダー</span></h2>
-    <h3><span style="color:green;">令和8年（2026年）</span></h3>
+
+    <header>
+        <div class="header-title">
+            <h2>学園町会 カレンダー</h2>
+            <h3>令和8年（2026年）</h3>
+        </div>
+        <button id="admin-btn" class="admin-link-btn">追加・削除</button>
+    </header>
+
     <div id="event-list">
     </div>    
     <p>&emsp;</p>
     <p>&emsp;</p>
+
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-        // HTMLがすべて読み込まれて、準備が整ったら実行する
         $(function() {
             
-            // データの流し込み先（箱）をjQueryで取得して変数に入れておく
+            // 💡 4桁のPINコード（パスワード）の設定
+            // ※「1234」の部分を、お好きな4桁の数字に書き換えてください。
+            const ADMIN_PIN = "1234"; 
+
+            // 💡 管理者用ボタンが押された時の処理
+            $('#admin-btn').on('click', function() {
+                const userInput = prompt("パスワード（4桁の数字）を入力してください：");
+                
+                if (userInput === null) {
+                    return; // キャンセルされた場合は何もしない
+                }
+                
+                if (userInput === ADMIN_PIN) {
+                    // PINが一致したら管理画面へ移動
+                    window.location.href = 'admin.html';
+                } else {
+                    alert("パスワードが違います。");
+                }
+            });
+
             const $container = $('#event-list');
-            
-            // 最初に箱の中身を念のため空っぽにする
             $container.empty();
 
-            // 同じフォルダにある 'events.json' を読み込む（非同期通信）
+            // 同じフォルダにある 'events.json' を読み込む
             $.getJSON('events.json', function(data) {
-                
-                // 読み込みが成功した場合、データの数だけ1件ずつループ処理
                 $.each(data, function(index, event) {
-                    
-                    // まず、行事の上に区切り線（<hr>）を追加
                     $container.append('<hr>');
 
-                    // 💡 安全対策＆undefined対策のデータ準備
                     const dateText    = event.date || '';
                     const titleText   = event.title || '';
-                    // 備考がある場合のみ「（備考）」の形にする（無ければ空文字）
                     const remarksText = event.remarks ? '（' + event.remarks + '）' : '';
 
-                    // 1. 新しい段落（<p>）の部品を安全に作成する
                     const $p = $('<p>');
 
-                    // 2. 終了した行事（isPast が true）かどうかの条件分岐
                     if (event.isPast) {
-                        // 過去の行事：class="past" をつけ、チェックマーク画像を入れる
                         $p.addClass('past');
-                        
-                        // 画像タグを追加
                         $p.append('<img src="images/checkmark.svg"> ');
-                        
-                        // 💡 文字列の部分は .text() を使わず、安全な専用のテキストノードとして追加する
-                        // （こうすることで、文字の中の <p> や <script> が完全にただの文字になります）
                         $p.append(document.createTextNode(dateText + ' ' + titleText + ' ' + remarksText));
                     } else {
-                        // 今後の行事：class="plan" をつける
                         $p.addClass('plan');
-                        
-                        // 💡 文字列の部分を安全に追加
                         $p.append(document.createTextNode(dateText + ' ' + titleText + ' ' + remarksText));
                     }
 
-                    // 3. 組み立てた安全な部品を、画面の箱に追加する
                     $container.append($p);
                 });
 
             }).fail(function() {
-                // 万が一、JSONファイルの読み込みに失敗した場合のエラー表示
-                // （ここは固定の文字なので .html() のままで安全です）
                 $container.html('<p style="color: red;">行事予定の読み込みに失敗しました。</p>');
             });
 
+            // PWA ServiceWorkerの登録
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('sw.js')
+                    .then(function() { console.log('PWA ServiceWorker 登録成功！'); })
+                    .catch(function(err) { console.error('PWA 登録失敗:', err); });
+            }
         });
-    </script>
-    <script>
-        // ブラウザがPWAに対応しているかチェックして、対応していれば裏方（sw.js）を起動する
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js')
-                .then(function() { console.log('PWA ServiceWorker 登録成功！'); })
-                .catch(function(err) { console.error('PWA 登録失敗:', err); });
-        }
     </script>
 </body>
 </html>

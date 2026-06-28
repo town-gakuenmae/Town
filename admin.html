@@ -176,7 +176,7 @@
 
                 globalEventList.forEach((event, index) => {
                     const pastText = event.isPast ? ' <span style="color:red;">[終了]</span>' : '';
-                    const remarksHtml = event.remarks ? `<br><span class="event-remarks">補足: ${event.remarks}</span>` : '';
+                    const remarksHtml = event.remarks ? `<br><span class="event-remarks">備考: ${event.remarks}</span>` : '';
                     
                     const item = `
                         <div class="event-item">
