@@ -5,8 +5,55 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>【管理画面】行事予定の管理</title>
     <style>
-        body { font-family: sans-serif; padding: 20px; max-width: 600px; margin: 0 auto; background: #f5f5f5; color: #333; }
-        h1, h2 { font-size: 20px; border-bottom: 2px solid #ccc; padding-bottom: 5px; }
+        /* 💡 上部固定ヘッダーのスタイル */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: #2e7d32; /* 🟢 index.htmlと同じ緑色に統一 */
+            color: white;
+            padding: 10px 15px;
+            box-sizing: border-box;
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        header h1 {
+            margin: 0;
+            font-size: 16px;
+        }
+
+        /* 💡 カレンダーに戻るボタンのスタイル */
+        .back-link-btn {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid white;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: bold;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .back-link-btn:active {
+            background-color: rgba(255, 255, 255, 0.4);
+        }
+
+        /* 💡 メインコンテンツ領域（ヘッダーに被らないように上部余白を空ける） */
+        body {
+            font-family: sans-serif;
+            padding: 75px 20px 20px 20px; /* 上部に75pxの余白を確保 */
+            max-width: 600px;
+            margin: 0 auto;
+            background: #f5f5f5;
+            color: #333;
+        }
+
+        h2 { font-size: 20px; border-bottom: 2px solid #ccc; padding-bottom: 5px; }
         .form-group { margin-bottom: 15px; background: white; padding: 15px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
         label { display: block; margin-bottom: 5px; font-weight: bold; }
         input[type="text"], input[type="password"] { width: 100%; padding: 8px; box-sizing: border-box; font-size: 16px; margin-bottom: 5px; }
@@ -30,7 +77,10 @@
 </head>
 <body>
 
-    <h1>行事予定の管理</h1>
+    <header>
+        <h1>行事予定の管理（管理者用）</h1>
+        <a href="index.html" class="back-link-btn">カレンダーに戻る</a>
+    </header>
 
     <div class="form-group">
         <label for="github-token">管理用パスワード (GitHub Token)</label>
@@ -40,7 +90,7 @@
     <div class="form-group">
         <h3>新しい行事の追加</h3>
         <label for="event-date">日付・時間</label>
-        <div class="hint">※必ず先頭を「月-日」にしてください．　例：06-23（火）10:00〜12:00．日が未定の場合はnfと入れて下さい．例：06-nf．</div>
+        <div class="hint">※必ず先頭を「月-日」にしてください（例：06-23（火）10:00〜12:00）</div>
         <input type="text" id="event-date" placeholder="06-23（火）10:00〜12:00">
         
         <label for="event-title">行事名</label>
@@ -84,24 +134,22 @@
                 const date = escapeHtml($('#event-date').val().trim());
                 const title = escapeHtml($('#event-title').val().trim());
                 const remarks = escapeHtml($('#event-remarks').val().trim());
-                const isPast = $('#event-past').prop('checked'); // 💡ここを確認
+                const isPast = $('#event-past').prop('checked');
 
                 if (!date || !title) {
                     showStatus('日付と行事名を入力してください。', 'error');
                     return;
                 }
 
-                // 先頭が「XXXX-XX-XX」の形式になっているか簡易チェック
+                // 💡 12-01 形式（先頭5文字）に合わせた入力チェック
                 const dateRegex = /^\d{2}-\d{2}/;
                 if (!dateRegex.test(date)) {
                     showStatus('エラー：日付の先頭は必ず「06-23」のように半角数字とハイフンで入力してください。', 'error');
                     return;
                 }
 
-                // データを追加
                 globalEventList.push({ date: date, title: title, remarks: remarks, isPast: isPast });
                 
-                // 追加したあとに日付順で並び替える
                 sortEvents();
                 
                 await updateGitHub('行事予定を追加（自動並び替え・XSS対策済）');
@@ -120,10 +168,9 @@
                 await updateGitHub('行事予定を削除');
             });
 
-            // 💡 配列を日付順に並び替える関数
+            // 💡 12-01 形式（先頭5文字）に合わせた並び替え関数
             function sortEvents() {
                 globalEventList.sort((a, b) => {
-                    // 先頭の「MM-DD」の部分だけを比較する
                     const dateA = a.date.substring(0, 5);
                     const dateB = b.date.substring(0, 5);
                     if (dateA < dateB) return -1;
@@ -154,7 +201,6 @@
                     const currentJson = decodeURIComponent(escape(atob(res.content)));
                     globalEventList = JSON.parse(currentJson);
 
-                    // 読み込み時にも念のため並び替える
                     sortEvents();
                     renderList();
                     showStatus('最新のデータを読み込みました。', 'success');
@@ -176,7 +222,7 @@
 
                 globalEventList.forEach((event, index) => {
                     const pastText = event.isPast ? ' <span style="color:red;">[終了]</span>' : '';
-                    const remarksHtml = event.remarks ? `<br><span class="event-remarks">備考: ${event.remarks}</span>` : '';
+                    const remarksHtml = event.remarks ? `<br><span class="event-remarks">補足: ${event.remarks}</span>` : '';
                     
                     const item = `
                         <div class="event-item">
@@ -236,8 +282,8 @@
                     $('#status').text(msg).removeClass().addClass(type).fadeIn();
                 }
             }
-        });
-            // HTMLの特別な記号（< や > など）を無害な文字に変換する関数
+
+            // HTMLの特別な記号を無害な文字に変換する関数
             function escapeHtml(str) {
                 if (!str) return '';
                 return str
@@ -247,6 +293,7 @@
                     .replace(/"/g, '&quot;')
                     .replace(/'/g, '&#39;');
             }
+        });
     </script>
 </body>
 </html>
