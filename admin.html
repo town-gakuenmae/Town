@@ -151,14 +151,27 @@
                 });
             }
 
-            // 💡 20260629 を 「6月29日（月）」に変える魔法の関数
+                // 💡 20260600 にも対応した、曜日・未定自動計算関数
             function convertToJapaneseDate(dateStr, timeStr) {
                 const y = parseInt(dateStr.substring(0, 4), 10);
                 const m = parseInt(dateStr.substring(4, 6), 10) - 1; // 月は0から始まる
-                const d = parseInt(dateStr.substring(6, 8), 10);
+                const dStr = dateStr.substring(6, 8);
                 
+                // 末尾が「00」の場合は、日を「未定」として処理する
+                if (dStr === "00") {
+                    // 月の範囲が正しいかだけチェック（1月〜12月）
+                    if (m < 0 || m > 11) return null;
+                    
+                    const monthText = `${m + 1}月（未定）`;
+                    // もし時間（例：10:00〜など）が入力されていれば後ろにつけ、無ければそのまま
+                    return timeStr ? `${monthText} ${timeStr}` : monthText;
+                }
+
+                // --- ここから下は、通常の日付（01〜31）の処理 ---
+                const d = parseInt(dStr, 10);
                 const dateObj = new Date(y, m, d);
-                // 正しくない日付（例：20260231など）のチェック
+                
+                // 存在しない日付（例：20260231など）のチェック
                 if (dateObj.getFullYear() !== y || dateObj.getMonth() !== m || dateObj.getDate() !== d) {
                     return null;
                 }
@@ -168,7 +181,6 @@
                 
                 return timeStr ? `${monthAndDay} ${timeStr}` : monthAndDay;
             }
-
             async function loadEvents() {
                 const token = $('#github-token').val().trim();
                 if (!token) {
