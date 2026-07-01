@@ -72,7 +72,7 @@
     <header>
         <div class="header-title">
             <h2>学園町会 カレンダー</h2>
-            <h3>令和8年（2026年）度</h3>
+            <h3><span id="year-display"></span></h3>
         </div>
         <button id="admin-btn" class="admin-link-btn">追加・削除</button>
     </header>
@@ -83,6 +83,32 @@
     <p>&emsp;</p>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        // 日付のデータを取得
+        const today = new Date();
+        const year = today.getFullYear(); // 西暦を取得
+        
+        // 和暦に変換する計算式（令和・平成対応）
+        let era = "";
+        let eraYear = 0;
+
+        if (year >= 2019) {
+        era = "令和";
+        eraYear = year - 2018;
+        } else if (year >= 1989) {
+        era = "平成";
+        eraYear = year - 1988;
+        }
+
+        // 「1年」の場合は「元年」にする
+        const displayYear = (eraYear === 1) ? "元" : eraYear;
+
+        // 画面に表示するテキストを作る (例: 2026年(令和8年))
+        const resultText = `${year}年（${era}${displayYear}年）`;
+
+        // id="year-display" の場所にテキストを入れる
+        document.getElementById("year-display").textContent = resultText;
+    </script>
     <script>
         $(function() {
             
