@@ -60,14 +60,14 @@
     "date": "7月4日（土）10：00〜",
     "title": "自主防災会会議：学園会館",
     "remarks": "",
-    "isPast": false
+    "isPast": true
   },
   {
     "dateId": "20260705",
     "date": "7月5日（日）10：00〜11：00",
     "title": "社協会費・日赤寄付金納付：学園会館",
     "remarks": "",
-    "isPast": false
+    "isPast": true
   },
   {
     "dateId": "20260707",
