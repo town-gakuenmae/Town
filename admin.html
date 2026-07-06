@@ -27,6 +27,10 @@
         .event-remarks { font-size: 12px; color: #666; margin-top: 3px; background: #f9f9f9; padding: 2px 6px; border-radius: 3px; display: inline-block; }
         .delete-btn { width: auto; padding: 6px 12px; background: #dc3545; font-size: 14px; }
         .load-btn { background: #28a745; margin-bottom: 15px; }
+
+        /* 💡 変更箇所：ボタンを横並びにする、および編集ボタン用のデザインを追加 */
+        .btn-container { display: flex; gap: 8px; }
+        .edit-btn { width: auto; padding: 6px 12px; background: #4CAF50; color: white; border: none; border-radius: 4px; font-size: 14px; font-weight: bold; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -43,6 +47,9 @@
 
     <div class="form-group">
         <h3>新しい行事の追加</h3>
+        
+        <!-- 💡 変更箇所（①）：編集中の行事番号をこっそり記録する隠し欄を追加 -->
+        <input type="hidden" id="edit-index" value="">
         
         <label for="event-date-8">日付（数字8桁）</label>
         <div class="hint">※例：20260629 自動で 6月29日（月）になります．日が未定の場合は20260600と入力下さい．6月（未定）と表示されます．</div>
@@ -93,6 +100,9 @@
                 const title = escapeHtml($('#event-title').val().trim());
                 const remarks = escapeHtml($('#event-remarks').val().trim());
                 const isPast = $('#event-past').prop('checked');
+                
+                // 💡 変更箇所（③の準備）：隠し欄から編集中のインデックス番号を取得
+                const editIndex = $('#edit-index').val();
 
                 if (!date8 || !title) {
                     showStatus('日付と行事名を入力してください。', 'error');
@@ -113,24 +123,73 @@
                     return;
                 }
 
-                // 新しいデータ構造で保存（ソート用に dateId を持たせる）
-                globalEventList.push({ 
+                // 新しいデータオブジェクトを作成
+                const eventData = { 
                     dateId: date8, 
                     date: formattedDate, 
                     title: title, 
                     remarks: remarks, 
                     isPast: isPast 
-                });
+                };
+
+                // 💡 変更箇所（③）：新規追加か上書き修正かで分岐する
+                let commitMessage = '';
+                if (editIndex !== "") {
+                    // 【上書きモード】メモしておいた番号のデータを差し替える
+                    globalEventList[parseInt(editIndex, 10)] = eventData;
+                    commitMessage = '行事予定を修正・更新';
+                } else {
+                    // 【新規追加モード】新しく配列の後ろに追加する
+                    globalEventList.push(eventData);
+                    commitMessage = '行事予定を追加（年跨ぎ自動ソート・曜日自動計算）';
+                }
                 
                 sortEvents();
                 
-                await updateGitHub('行事予定を追加（年跨ぎ自動ソート・曜日自動計算）');
+                await updateGitHub(commitMessage);
                 
+                // フォームの入力内容と、編集モード状態をきれいにリセット
                 $('#event-date-8').val('');
                 $('#event-time').val('');
                 $('#event-title').val('');
                 $('#event-remarks').val('');
                 $('#event-past').prop('checked', false);
+                $('#edit-index').val('');            // 隠し欄をリセット
+                $('#save-btn').text('この行事を追加する'); // ボタンの文字を戻す
+            });
+
+            // 💡 変更箇所：削除ボタンだけでなく、新しく追加する編集ボタンのクリックイベントも拾えるように設定
+            $('#event-list-container').on('click', '.edit-btn', function() {
+                const index = $(this).data('index');
+                const ev = globalEventList[index];
+
+                // いま登録されているデータ（エスケープ解除したもの）を入力欄に呼び出す
+                // 備考や時間が入っていない場合は空文字にする
+                $('#event-date-8').val(ev.dateId || '');
+                $('#event-title').val(ev.title);
+                $('#event-remarks').val(ev.remarks || '');
+                
+                // 時間（timeStr）は、formattedDate（〇月〇日（木） 10:00〜）の後ろにくっついているため、
+                // 日本語日付部分を除去して時間だけを抽出して入力欄に戻します
+                let extractedTime = '';
+                if (ev.date.includes('） ')) {
+                    extractedTime = ev.date.split('） ')[1];
+                } else if (ev.date.includes('）')) {
+                    // 時間が何も含まれていない場合は空のまま
+                    extractedTime = '';
+                }
+                $('#event-time').val(extractedTime);
+                
+                $('#event-past').prop('checked', ev.isPast || false);
+
+                // 「何番目の行事を編集しているか」を隠し欄にメモ
+                $('#edit-index').val(index);
+
+                // ボタンの文字を切り替えて、編集モードであることをわかりやすくする
+                $('#save-btn').text('変更を保存（更新）する');
+
+                // 画面の一番上（入力フォーム）までスムーズにスクロール
+                window.scrollTo({ top: 0, behavior: 'smooth' });
             });
 
             $('#event-list-container').on('click', '.delete-btn', async function() {
@@ -151,7 +210,7 @@
                 });
             }
 
-                // 💡 20260600 にも対応した、曜日・未定自動計算関数
+            // 💡 20260600 にも対応した、曜日・未定自動計算関数
             function convertToJapaneseDate(dateStr, timeStr) {
                 const y = parseInt(dateStr.substring(0, 4), 10);
                 const m = parseInt(dateStr.substring(4, 6), 10) - 1; // 月は0から始まる
@@ -181,6 +240,7 @@
                 
                 return timeStr ? `${monthAndDay} ${timeStr}` : monthAndDay;
             }
+
             async function loadEvents() {
                 const token = $('#github-token').val().trim();
                 if (!token) {
@@ -211,6 +271,7 @@
                 }
             }
 
+            // 💡 変更箇所（②）：描画される行事ごとに「編集」ボタンと「削除」ボタンを並べて配置
             function renderList() {
                 const container = $('#event-list-container');
                 container.empty();
@@ -231,7 +292,10 @@
                                 ${event.title}${pastText}
                                 ${remarksHtml}
                             </div>
-                            <button class="delete-btn" data-index="${index}">削除</button>
+                            <div class="btn-container">
+                                <button class="edit-btn" data-index="${index}">編集</button>
+                                <button class="delete-btn" data-index="${index}">削除</button>
+                            </div>
                         </div>
                     `);
                 });
