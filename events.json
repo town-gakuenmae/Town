@@ -78,10 +78,10 @@
   },
   {
     "dateId": "20260718",
-    "date": "7月18日（土）9：30〜",
+    "date": "7月18日（土）",
     "title": "令和8年度第2回役員会：学園会館",
     "remarks": "",
-    "isPast": false
+    "isPast": true
   },
   {
     "dateId": "20260721",
