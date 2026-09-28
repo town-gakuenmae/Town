@@ -137,14 +137,14 @@
     "date": "9月26日（土） 10:00〜12:00",
     "title": "ふれあい敬老会（社協学園支部主催）",
     "remarks": "学園会館",
-    "isPast": false
+    "isPast": true
   },
   {
     "dateId": "20260926",
     "date": "9月26日（土） 18:00〜",
     "title": "西原小ブロックスポーツフェスティバル第3回実行委員会",
     "remarks": "学園会館",
-    "isPast": false
+    "isPast": true
   },
   {
     "dateId": "20261003",
