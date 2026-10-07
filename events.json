@@ -151,27 +151,34 @@
     "date": "10月3日（土） 10:30〜",
     "title": "学園町会スポーツフェス役割分担最終打合せ",
     "remarks": "",
-    "isPast": false
+    "isPast": true
   },
   {
     "dateId": "20261004",
     "date": "10月4日（日）9:30〜11:00",
     "title": "町会主催防災訓練",
     "remarks": "起震車体験、水消火器訓練実施予定",
-    "isPast": false
+    "isPast": true
   },
   {
     "dateId": "20261006",
     "date": "10月6日（火）10：00〜12：00",
     "title": "立ち寄りカフェ（社協学園支部）：学園会館",
     "remarks": "毎月第1火曜日開催",
-    "isPast": false
+    "isPast": true
   },
   {
     "dateId": "20261011",
     "date": "10月11日（日）",
     "title": "西原小ブロックスポーツフェスティバル：西原小",
     "remarks": "本年は学園町会が幹事役",
+    "isPast": false
+  },
+  {
+    "dateId": "20261017",
+    "date": "10月17日（土）",
+    "title": "町会役員会：学園会館",
+    "remarks": "",
     "isPast": false
   },
   {
