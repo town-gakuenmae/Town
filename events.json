@@ -179,7 +179,7 @@
     "date": "10月17日（土）",
     "title": "町会役員会：学園会館",
     "remarks": "",
-    "isPast": false
+    "isPast": true
   },
   {
     "dateId": "20261018",
@@ -204,7 +204,7 @@
   },
   {
     "dateId": "20261108",
-    "date": "11月8日（日）",
+    "date": "11月8日（日）8:50学園会館集合",
     "title": "ふじみ野市主催防災訓練：西原小",
     "remarks": "",
     "isPast": false
