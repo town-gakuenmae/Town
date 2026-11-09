@@ -200,14 +200,14 @@
     "date": "11月3日（火）10：00〜12：00",
     "title": "立ち寄りカフェ（社協学園支部）：学園会館",
     "remarks": "毎月第1火曜日開催",
-    "isPast": false
+    "isPast": true
   },
   {
     "dateId": "20261108",
     "date": "11月8日（日）8:50学園会館集合",
     "title": "ふじみ野市主催防災訓練：西原小",
     "remarks": "",
-    "isPast": false
+    "isPast": true
   },
   {
     "dateId": "20261128",
